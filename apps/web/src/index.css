@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Vibrant, neo-brutalist board game palette with Indian flavor */
+  --color-background: #FDF9F1; /* Warm off-white paper feel */
+  --color-surface: #FFFFFF;
+  --color-card: #FFFFFF;
+    
+    --color-primary: #FFB800; /* Mango Yellow */
+    --color-accent: #E91E63; /* Jaipur Pink */
+    --color-success: #10B981; /* Emerald Green */
+    --color-danger: #EF4444; /* Spice Red */
+    
+    --color-border: #111827; /* Near black for thick chunky borders */
+    --color-text: #111827;
+    --color-muted: #6B7280;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Custom Clean Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FDF9F1;
+    border-left: 2px solid #111827;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #111827;
+    border: 2px solid #FDF9F1;
+  }
+
+@layer utilities {
+  .neo-brutal {
+    border: 3px solid #111827;
+    box-shadow: 4px 4px 0px 0px #111827;
+    transition: all 0.15s ease-out;
+  }
+  .neo-brutal:hover {
+    box-shadow: 6px 6px 0px 0px #111827;
+    transform: translate(-2px, -2px);
+  }
+  .neo-brutal:active {
+    box-shadow: 0px 0px 0px 0px #111827;
+    transform: translate(4px, 4px);
+  }
+}
