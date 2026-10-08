@@ -33,21 +33,23 @@ const Die: React.FC<{ value: number; rolling: boolean; delay: number }> = ({ val
 
   const renderDots = () => {
     const dots = [];
+    const dotClass = "bg-black rounded-full w-2 h-2 md:w-3 md:h-3";
+    
     // Just mapping the face logic
     if (displayValue === 1 || displayValue === 3 || displayValue === 5) {
-      dots.push(<div key="center" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-slate-900 rounded-full" />);
+      dots.push(<div key="center" className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${dotClass}`} />);
     }
     if (displayValue !== 1) {
-      dots.push(<div key="tl" className="absolute top-2 left-2 w-2 h-2 bg-slate-900 rounded-full" />);
-      dots.push(<div key="br" className="absolute bottom-2 right-2 w-2 h-2 bg-slate-900 rounded-full" />);
+      dots.push(<div key="tl" className={`absolute top-2 left-2 md:top-3 md:left-3 ${dotClass}`} />);
+      dots.push(<div key="br" className={`absolute bottom-2 right-2 md:bottom-3 md:right-3 ${dotClass}`} />);
     }
     if (displayValue >= 4) {
-      dots.push(<div key="tr" className="absolute top-2 right-2 w-2 h-2 bg-slate-900 rounded-full" />);
-      dots.push(<div key="bl" className="absolute bottom-2 left-2 w-2 h-2 bg-slate-900 rounded-full" />);
+      dots.push(<div key="tr" className={`absolute top-2 right-2 md:top-3 md:right-3 ${dotClass}`} />);
+      dots.push(<div key="bl" className={`absolute bottom-2 left-2 md:bottom-3 md:left-3 ${dotClass}`} />);
     }
     if (displayValue === 6) {
-      dots.push(<div key="ml" className="absolute top-1/2 left-2 -translate-y-1/2 w-2 h-2 bg-slate-900 rounded-full" />);
-      dots.push(<div key="mr" className="absolute top-1/2 right-2 -translate-y-1/2 w-2 h-2 bg-slate-900 rounded-full" />);
+      dots.push(<div key="ml" className={`absolute top-1/2 left-2 md:left-3 -translate-y-1/2 ${dotClass}`} />);
+      dots.push(<div key="mr" className={`absolute top-1/2 right-2 md:right-3 -translate-y-1/2 ${dotClass}`} />);
     }
     return dots;
   };
@@ -55,7 +57,7 @@ const Die: React.FC<{ value: number; rolling: boolean; delay: number }> = ({ val
   return (
     <motion.div
       animate={controls}
-      className="w-12 h-12 bg-white rounded-xl shadow-lg relative border-b-4 border-slate-300"
+      className="w-12 h-12 md:w-16 md:h-16 bg-white border-4 border-border shadow-[4px_4px_0px_0px_rgba(17,24,39,1)] relative"
       style={{ transformStyle: 'preserve-3d' }}
     >
       {renderDots()}
@@ -72,7 +74,7 @@ export const Dice: React.FC<DiceProps> = ({ rolling, values, onRollComplete }) =
   }, [rolling, onRollComplete]);
 
   return (
-    <div className="flex gap-4 p-6 bg-slate-800/80 rounded-2xl border border-slate-700/50 backdrop-blur-sm shadow-xl">
+    <div className="flex gap-4 md:gap-6 p-4 md:p-6 bg-accent border-4 border-border shadow-[8px_8px_0px_0px_rgba(17,24,39,1)] transform rotate-2">
       <Die value={values[0]} rolling={rolling} delay={0} />
       <Die value={values[1]} rolling={rolling} delay={0.1} />
     </div>

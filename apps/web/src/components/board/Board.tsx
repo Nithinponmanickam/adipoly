@@ -1,7 +1,6 @@
 import React from 'react';
 import { ADIPOLY_BOARD_SPACES } from '@adipoly/game-engine';
 import { BoardSpace } from './BoardSpace.js';
-
 import { Dice } from './Dice.js';
 
 const getSpaceOrientation = (index: number): 'top' | 'bottom' | 'left' | 'right' | 'corner' => {
@@ -31,9 +30,9 @@ const getGridPosition = (index: number) => {
 
 export const Board: React.FC = () => {
   return (
-    <div className="w-full max-w-4xl aspect-square mx-auto p-4 flex items-center justify-center bg-slate-950">
+    <div className="w-full max-w-5xl aspect-square mx-auto flex items-center justify-center p-4">
       <div 
-        className="grid w-full h-full gap-1 p-2 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 relative"
+        className="grid w-full h-full bg-surface border-4 border-border shadow-[12px_12px_0px_0px_rgba(17,24,39,1)] relative"
         style={{
           gridTemplateColumns: 'repeat(9, 1fr)',
           gridTemplateRows: 'repeat(9, 1fr)',
@@ -41,12 +40,26 @@ export const Board: React.FC = () => {
       >
         {/* Center Area (Logo, Dice, Events) */}
         <div 
-          className="col-start-2 col-end-9 row-start-2 row-end-9 bg-slate-900/50 rounded-xl m-2 flex flex-col items-center justify-center border border-slate-800/50 gap-8"
+          className="col-start-2 col-end-9 row-start-2 row-end-9 bg-background flex flex-col items-center justify-center relative border-4 border-border m-1"
         >
-          <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-cyan-400 to-emerald-400 tracking-tighter shadow-sm mb-4">
-            ADIPOLY
+          {/* Decorative Pattern in center */}
+          <div 
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(#111827 2px, transparent 2px)',
+              backgroundSize: '24px 24px'
+            }}
+          />
+          
+          <div className="z-10 bg-white border-4 border-border px-8 py-4 shadow-[6px_6px_0px_0px_rgba(17,24,39,1)] transform -rotate-2 mb-12">
+            <h1 className="text-5xl md:text-7xl font-display font-black text-black tracking-tighter uppercase">
+              ADI<span className="text-accent">POLY</span>
+            </h1>
           </div>
-          <Dice rolling={false} values={[3, 4]} />
+          
+          <div className="z-10">
+            <Dice rolling={false} values={[3, 4]} />
+          </div>
         </div>
 
         {/* Board Spaces */}
@@ -58,7 +71,7 @@ export const Board: React.FC = () => {
             <div 
               key={space.id} 
               style={{ ...position }}
-              className="flex items-stretch justify-stretch"
+              className="flex items-stretch justify-stretch border-border outline outline-2 outline-border z-20 bg-white"
             >
               <BoardSpace space={space} orientation={orientation} />
             </div>
