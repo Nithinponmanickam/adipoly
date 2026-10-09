@@ -11,6 +11,7 @@
     "dev": "concurrently -n \"SERVER,WEB\" -c \"blue,magenta\" \"npm run dev -w @adipoly/server\" \"npm run dev -w @adipoly/web\"",
     "dev:server": "npm run dev -w @adipoly/server",
     "dev:web": "npm run dev -w @adipoly/web",
+    "start": "npm run start -w @adipoly/server",
     "build": "npm run build --workspaces --if-present",
     "build:server": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/server",
     "build:web": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/web",
