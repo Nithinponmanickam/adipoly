@@ -12,7 +12,7 @@
     "dev:server": "npm run dev -w @adipoly/server",
     "dev:web": "npm run dev -w @adipoly/web",
     "start": "npm run start -w @adipoly/server",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/server && npm run build -w @adipoly/web",
     "build:server": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/server",
     "build:web": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/web",
     "test": "npm run test --workspaces --if-present",
