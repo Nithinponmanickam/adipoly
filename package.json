@@ -12,6 +12,8 @@
     "dev:server": "npm run dev -w @adipoly/server",
     "dev:web": "npm run dev -w @adipoly/web",
     "build": "npm run build --workspaces --if-present",
+    "build:server": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/server",
+    "build:web": "npm run build -w @adipoly/shared && npm run build -w @adipoly/game-engine && npm run build -w @adipoly/web",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "postinstall": "node -e \"const fs=require('fs'); if(fs.existsSync('node_modules/@rollup/wasm-node/dist')){fs.copyFileSync('node_modules/@rollup/wasm-node/dist/native.js','node_modules/rollup/dist/native.js'); fs.cpSync('node_modules/@rollup/wasm-node/dist/wasm-node','node_modules/rollup/dist/wasm-node',{recursive:true});}\""
