@@ -149,3 +149,5 @@ The application runs with zero configuration out of the box. Optional environmen
 Phase 1 established the complete monorepo foundation, authoritative room management, zero-login identity, reconnection tokens, match settings, and lobby chat.
 
 **Phase 2** will introduce the interactive graphical board, 2d6 dice physics, player tokens, property purchases, and rent calculation.
+
+# Trigger deployment
