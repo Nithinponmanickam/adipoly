@@ -30,7 +30,7 @@ const getGridPosition = (index: number) => {
 
 export const Board: React.FC = () => {
   return (
-    <div className="w-full max-w-5xl aspect-square mx-auto flex items-center justify-center p-4">
+    <div className="w-full max-w-5xl aspect-square mx-auto flex items-center justify-center p-4 min-w-[800px] md:min-w-0">
       <div 
         className="grid w-full h-full bg-surface border-4 border-border shadow-[12px_12px_0px_0px_rgba(17,24,39,1)] relative"
         style={{
