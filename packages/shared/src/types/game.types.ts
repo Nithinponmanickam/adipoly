@@ -45,3 +45,12 @@ export interface PropertyData {
   ownerId?: string;
   developmentLevel: number; // 0 to 5
 }
+
+export interface GameStateSummary {
+  gameId: string;
+  phase: TurnPhase;
+  turnNumber: number;
+  activePlayerIndex: number;
+  properties: Record<string, PropertyData>;
+  lastDiceRoll?: [number, number];
+}

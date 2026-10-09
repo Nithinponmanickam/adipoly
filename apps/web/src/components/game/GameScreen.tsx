@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../../store/gameStore.js';
 import { Board } from '../board/Board.js';
+import { GameControls } from './GameControls.js';
 
 export const GameScreen: React.FC = () => {
   const { roomState } = useGameStore();
@@ -18,15 +19,20 @@ export const GameScreen: React.FC = () => {
         </div>
         <div className="p-4 flex flex-col gap-4">
           {roomState.players.map((p, index) => {
-            const colors = ['bg-accent', 'bg-success', 'bg-primary', 'bg-danger'];
-            const color = colors[index % colors.length];
+            const isMyTurn = roomState.gameState?.activePlayerIndex === index;
+            const color = p.color || '#3B82F6';
 
             return (
               <div 
                 key={p.id} 
-                className="neo-brutal bg-white p-4 flex flex-col gap-2 relative overflow-hidden"
+                className={`neo-brutal p-4 flex flex-col gap-2 relative overflow-hidden transition-colors ${
+                  isMyTurn ? 'bg-primary/10 border-primary' : 'bg-white'
+                }`}
               >
-                <div className={`absolute top-0 left-0 bottom-0 w-2 ${color} border-r-2 border-border`} />
+                <div 
+                  className="absolute top-0 left-0 bottom-0 w-2 border-r-2 border-border" 
+                  style={{ backgroundColor: color }}
+                />
                 <div className="pl-2 flex items-center justify-between">
                   <span className="font-black text-lg truncate uppercase">{p.displayName}</span>
                   {p.isHost && (
@@ -36,9 +42,14 @@ export const GameScreen: React.FC = () => {
                 <div className="pl-2 flex items-center justify-between mt-2">
                   <span className="font-bold text-sm text-muted uppercase tracking-widest">Net Worth</span>
                   <span className="font-black text-xl text-success flex items-center gap-1">
-                    ₹{roomState.settings.players.startingMoney.toLocaleString()}
+                    ₹{(p.money ?? roomState.settings.players.startingMoney).toLocaleString()}
                   </span>
                 </div>
+                {isMyTurn && (
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    <span className="animate-pulse bg-primary w-2 h-2 rounded-full border border-black" />
+                  </div>
+                )}
               </div>
             );
           })}
@@ -55,8 +66,11 @@ export const GameScreen: React.FC = () => {
             backgroundSize: '32px 32px'
           }}
         />
-        <div className="relative z-10 w-full h-full flex items-center justify-center">
+        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
           <Board />
+          <div className="mt-8">
+            <GameControls />
+          </div>
         </div>
       </div>
     </div>

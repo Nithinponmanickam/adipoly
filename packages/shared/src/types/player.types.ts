@@ -6,6 +6,9 @@ export interface PlayerSummary {
   connected: boolean;
   color: string;
   teamId?: string | null;
+  money?: number;
+  position?: number;
+  ownedPropertyIds?: string[];
 }
 
 export interface PlayerJailState {

@@ -2,6 +2,7 @@ import React from 'react';
 import { ADIPOLY_BOARD_SPACES } from '@adipoly/game-engine';
 import { BoardSpace } from './BoardSpace.js';
 import { Dice } from './Dice.js';
+import { useGameStore } from '../../store/gameStore.js';
 
 const getSpaceOrientation = (index: number): 'top' | 'bottom' | 'left' | 'right' | 'corner' => {
   if (index === 0 || index === 8 || index === 16 || index === 24) return 'corner';
@@ -29,6 +30,10 @@ const getGridPosition = (index: number) => {
 };
 
 export const Board: React.FC = () => {
+  const { roomState } = useGameStore();
+  const dice = roomState?.gameState?.lastDiceRoll || [3, 4];
+  const isRolling = roomState?.gameState?.phase === 'ROLLING' || false;
+  
   return (
     <div className="w-full max-w-5xl aspect-square mx-auto flex items-center justify-center p-4 min-w-[800px] md:min-w-0">
       <div 
@@ -58,7 +63,7 @@ export const Board: React.FC = () => {
           </div>
           
           <div className="z-10">
-            <Dice rolling={false} values={[3, 4]} />
+            <Dice rolling={isRolling} values={dice as [number, number]} />
           </div>
         </div>
 

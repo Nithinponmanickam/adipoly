@@ -41,6 +41,11 @@ export interface ClientToServerEvents {
   'game:start': () => void;
 
   'chat:send': (data: { text: string }) => void;
+  
+  // Game Actions
+  'game:rollDice': (callback: (response: ApiResponse<{ dice: [number, number] }>) => void) => void;
+  'game:buyProperty': (callback: (response: ApiResponse<{}>) => void) => void;
+  'game:endTurn': (callback: (response: ApiResponse<{}>) => void) => void;
 }
 
 export interface ServerToClientEvents {

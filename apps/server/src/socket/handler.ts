@@ -273,7 +273,58 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
       }
     });
 
-    // 10. Leave Room
+    // 10. Game Actions
+    socket.on('game:rollDice', (callback) => {
+      const room = roomManager.getRoomBySocketId(socket.id);
+      const player = roomManager.getPlayerBySocketId(socket.id);
+      if (!room || !player || !room.gameEngine) return;
+      
+      const result = room.gameEngine.rollDice(player.id);
+      if (result.success && result.dice) {
+        callback({ success: true, data: { dice: result.dice } });
+        io.to(room.roomCode).emit('room:state', room.getState());
+        if (result.message) {
+          room.addSystemChatMessage(`${player.displayName} ${result.message}`);
+          io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+        }
+      } else {
+        callback({ success: false, error: { code: 'ROLL_FAILED', message: result.message || 'Failed to roll' } });
+      }
+    });
+
+    socket.on('game:buyProperty', (callback) => {
+      const room = roomManager.getRoomBySocketId(socket.id);
+      const player = roomManager.getPlayerBySocketId(socket.id);
+      if (!room || !player || !room.gameEngine) return;
+      
+      const result = room.gameEngine.buyProperty(player.id);
+      if (result.success) {
+        callback({ success: true, data: {} });
+        io.to(room.roomCode).emit('room:state', room.getState());
+        if (result.message) {
+          room.addSystemChatMessage(`${player.displayName} ${result.message}`);
+          io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+        }
+      } else {
+        callback({ success: false, error: { code: 'BUY_FAILED', message: result.message || 'Failed to buy' } });
+      }
+    });
+
+    socket.on('game:endTurn', (callback) => {
+      const room = roomManager.getRoomBySocketId(socket.id);
+      const player = roomManager.getPlayerBySocketId(socket.id);
+      if (!room || !player || !room.gameEngine) return;
+      
+      const result = room.gameEngine.endTurn(player.id);
+      if (result.success) {
+        callback({ success: true, data: {} });
+        io.to(room.roomCode).emit('room:state', room.getState());
+      } else {
+        callback({ success: false, error: { code: 'END_TURN_FAILED', message: result.message || 'Failed to end turn' } });
+      }
+    });
+
+    // 11. Leave Room
     socket.on('room:leave', () => {
       const { room } = roomManager.leaveRoom(socket.id);
       if (room) {

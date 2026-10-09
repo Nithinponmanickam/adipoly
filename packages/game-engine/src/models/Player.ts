@@ -57,6 +57,9 @@ export class GamePlayer {
       connected: this.connected,
       color: this.color,
       teamId: this.teamId,
+      money: this.money,
+      position: this.position,
+      ownedPropertyIds: this.ownedPropertyIds,
     };
   }
 }

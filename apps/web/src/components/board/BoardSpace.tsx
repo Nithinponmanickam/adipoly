@@ -1,5 +1,6 @@
 import React from 'react';
 import { BoardSpaceDefinition } from '@adipoly/game-engine';
+import { useGameStore } from '../../store/gameStore.js';
 
 interface BoardSpaceProps {
   space: BoardSpaceDefinition;
@@ -7,8 +8,11 @@ interface BoardSpaceProps {
 }
 
 export const BoardSpace: React.FC<BoardSpaceProps> = ({ space, orientation }) => {
+  const { roomState } = useGameStore();
   const isCorner = orientation === 'corner';
   const hasColorBar = space.type === 'PROPERTY' && space.groupColor;
+  
+  const playersOnSpace = roomState?.players.filter(p => p.position === space.index) || [];
 
   return (
     <div
@@ -39,7 +43,14 @@ export const BoardSpace: React.FC<BoardSpaceProps> = ({ space, orientation }) =>
 
         {/* Players container */}
         <div className="flex gap-1 flex-wrap justify-center mt-auto h-4 w-full">
-          {/* We'll render player tokens here later */}
+          {playersOnSpace.map(p => (
+            <div 
+              key={p.id} 
+              className="w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-border shadow-[2px_2px_0px_0px_rgba(17,24,39,1)] z-30"
+              style={{ backgroundColor: p.color || '#3B82F6' }}
+              title={p.displayName}
+            />
+          ))}
         </div>
       </div>
     </div>

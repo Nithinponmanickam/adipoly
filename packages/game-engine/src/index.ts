@@ -14,3 +14,6 @@ export * from './modifiers/chaos.js';
 // Rules
 export * from './rules/teams.js';
 export * from './rules/turn.js';
+
+// Engine
+export * from './GameLoop.js';

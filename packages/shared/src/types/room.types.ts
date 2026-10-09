@@ -9,6 +9,7 @@ export interface RoomState {
   status: RoomStatus;
   players: PlayerSummary[];
   settings: MatchSettings;
+  gameState?: import('./game.types.js').GameStateSummary;
   createdAt: number;
   updatedAt: number;
 }

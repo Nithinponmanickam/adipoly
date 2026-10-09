@@ -13,7 +13,7 @@ import {
   MIN_PLAYERS,
   PLAYER_COLORS,
 } from '@adipoly/shared';
-import { GamePlayer, TeamManager } from '@adipoly/game-engine';
+import { GamePlayer, TeamManager, GameLoop } from '@adipoly/game-engine';
 import { CONFIG } from '../config/index.js';
 
 export class GameRoom {
@@ -23,6 +23,8 @@ export class GameRoom {
   public settings: MatchSettings;
   public createdAt: number;
   public updatedAt: number;
+  
+  public gameEngine?: GameLoop;
 
   private players = new Map<string, GamePlayer>(); // playerId -> GamePlayer
   private chatMessages: ChatMessage[] = [];
@@ -292,6 +294,11 @@ export class GameRoom {
     }
 
     this.status = 'IN_GAME';
+    
+    // Initialize Game Engine
+    const playersArray = Array.from(this.players.values());
+    this.gameEngine = new GameLoop(this.roomCode, playersArray, this.settings);
+    
     this.updatedAt = Date.now();
     this.addSystemChatMessage('Match started! Loading board...');
   }
@@ -367,6 +374,15 @@ export class GameRoom {
       settings: JSON.parse(JSON.stringify(this.settings)),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      gameState: this.gameEngine ? {
+        gameId: this.gameEngine.state.gameId,
+        phase: this.gameEngine.state.phase,
+        turnNumber: this.gameEngine.state.turnNumber,
+        activePlayerIndex: this.gameEngine.state.activePlayerIndex,
+        properties: Object.fromEntries(
+          Object.entries(this.gameEngine.state.properties).map(([k, v]) => [k, v.toJSON()])
+        ),
+      } : undefined,
     };
   }
 }

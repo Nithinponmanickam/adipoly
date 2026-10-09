@@ -57,6 +57,11 @@ interface GameStore {
   startGame: () => void;
   sendChatMessage: (text: string) => void;
   leaveRoom: () => void;
+  
+  // Game Actions
+  rollDice: () => void;
+  buyProperty: () => void;
+  endTurn: () => void;
 
   // Computed helper
   getCurrentPlayer: () => PlayerSummary | undefined;
@@ -218,6 +223,36 @@ export const useGameStore = create<GameStore>((set, get) => ({
     socket.emit('room:leave');
     get().clearSession();
     get().showToast('Left the room', 'info');
+  },
+
+  rollDice: () => {
+    set({ isLoading: true });
+    socket.emit('game:rollDice', (response) => {
+      set({ isLoading: false });
+      if (!response.success) {
+        get().showToast(response.error?.message || 'Failed to roll', 'error');
+      }
+    });
+  },
+
+  buyProperty: () => {
+    set({ isLoading: true });
+    socket.emit('game:buyProperty', (response) => {
+      set({ isLoading: false });
+      if (!response.success) {
+        get().showToast(response.error?.message || 'Failed to buy', 'error');
+      }
+    });
+  },
+
+  endTurn: () => {
+    set({ isLoading: true });
+    socket.emit('game:endTurn', (response) => {
+      set({ isLoading: false });
+      if (!response.success) {
+        get().showToast(response.error?.message || 'Failed to end turn', 'error');
+      }
+    });
   },
 
   getCurrentPlayer: () => {
