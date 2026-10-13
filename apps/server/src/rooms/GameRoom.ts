@@ -382,6 +382,8 @@ export class GameRoom {
         properties: Object.fromEntries(
           Object.entries(this.gameEngine.state.properties).map(([k, v]) => [k, v.toJSON()])
         ),
+        lastDiceRoll: this.gameEngine.state.lastDiceRoll,
+        winnerPlayerId: this.gameEngine.state.winnerPlayerId,
       } : undefined,
     };
   }

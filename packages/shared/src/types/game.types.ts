@@ -53,4 +53,5 @@ export interface GameStateSummary {
   activePlayerIndex: number;
   properties: Record<string, PropertyData>;
   lastDiceRoll?: [number, number];
+  winnerPlayerId?: string;
 }

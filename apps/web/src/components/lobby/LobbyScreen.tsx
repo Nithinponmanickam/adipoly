@@ -38,7 +38,7 @@ export const LobbyScreen: React.FC = () => {
   const host = isHost();
 
   const copyRoomCode = () => {
-    navigator.clipboard.writeText(roomState.roomCode);
+    navigator.clipboard.writeText(roomState.roomCode).catch(() => {});
     setCopied(true);
     showToast(`Room code ${roomState.roomCode} copied!`, 'info');
     setTimeout(() => setCopied(false), 2000);

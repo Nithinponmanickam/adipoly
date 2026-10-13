@@ -31,12 +31,15 @@ interface GameStore {
   toast: ToastState | null;
   isLoading: boolean;
   isStarting: boolean;
+  isRollingDice: boolean;
+  selectedSpaceIndex: number | null;
 
   // Actions
   setConnected: (connected: boolean) => void;
   setRoomState: (state: RoomState | null) => void;
   addChatMessage: (message: ChatMessage) => void;
   setActiveModal: (modal: 'CREATE' | 'JOIN' | 'SETTINGS' | 'HOW_TO_PLAY' | null) => void;
+  setSelectedSpaceIndex: (index: number | null) => void;
   showToast: (message: string, type?: 'info' | 'error' | 'success') => void;
   clearToast: () => void;
   setLoading: (loading: boolean) => void;
@@ -80,9 +83,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   toast: null,
   isLoading: false,
   isStarting: false,
+  isRollingDice: false,
+  selectedSpaceIndex: null,
 
   setConnected: (connected) => set({ connected }),
   setRoomState: (roomState) => set({ roomState }),
+  setSelectedSpaceIndex: (selectedSpaceIndex) => set({ selectedSpaceIndex }),
   addChatMessage: (message) =>
     set((state) => {
       // Avoid duplicates
@@ -226,9 +232,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   rollDice: () => {
-    set({ isLoading: true });
+    set({ isLoading: true, isRollingDice: true });
     socket.emit('game:rollDice', (response) => {
       set({ isLoading: false });
+      setTimeout(() => set({ isRollingDice: false }), 800);
       if (!response.success) {
         get().showToast(response.error?.message || 'Failed to roll', 'error');
       }

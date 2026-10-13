@@ -8,7 +8,7 @@ export const Header: React.FC = () => {
 
   const copyCode = () => {
     if (!roomState?.roomCode) return;
-    navigator.clipboard.writeText(roomState.roomCode);
+    navigator.clipboard.writeText(roomState.roomCode).catch(() => {});
     setCopied(true);
     showToast(`Room code ${roomState.roomCode} copied to clipboard!`, 'info');
     setTimeout(() => setCopied(false), 2000);

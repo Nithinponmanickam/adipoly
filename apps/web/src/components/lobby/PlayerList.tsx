@@ -4,7 +4,7 @@ import { Crown, CheckCircle2, Clock, UserX, WifiOff, UserPlus, Check } from 'luc
 import { DEFAULT_TEAMS } from '@adipoly/shared';
 
 export const PlayerList: React.FC = () => {
-  const { roomState, currentPlayerId, isHost, kickPlayer, setTeam } = useGameStore();
+  const { roomState, currentPlayerId, isHost, kickPlayer, setTeam, showToast } = useGameStore();
 
   if (!roomState) return null;
 
@@ -31,8 +31,8 @@ export const PlayerList: React.FC = () => {
               <button 
                 key={`empty-${index}`} 
                 onClick={() => {
-                  navigator.clipboard.writeText(roomState.roomCode);
-                  alert(`Copied room code: ${roomState.roomCode}`);
+                  navigator.clipboard.writeText(roomState.roomCode).catch(() => {});
+                  showToast(`Copied room code: ${roomState.roomCode}`, 'info');
                 }}
                 className="neo-brutal bg-background border-dashed border-muted text-muted flex flex-col items-center justify-center p-8 h-48 hover:bg-white hover:text-text transition-colors hover:border-solid hover:border-border cursor-pointer group"
               >

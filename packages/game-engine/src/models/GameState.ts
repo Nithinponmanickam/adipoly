@@ -13,6 +13,7 @@ export interface AuthoritativeGameState {
   properties: Record<string, Property>;
   settings: MatchSettings;
   winnerPlayerId?: string;
+  lastDiceRoll?: [number, number];
   createdAt: number;
   updatedAt: number;
 }

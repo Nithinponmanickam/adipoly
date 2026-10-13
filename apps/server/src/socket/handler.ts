@@ -24,13 +24,15 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
       try {
         const parsed = CreateRoomPayloadSchema.safeParse(payload);
         if (!parsed.success) {
-          callback({
-            success: false,
-            error: {
-              code: ERROR_CODES.INVALID_DISPLAY_NAME,
-              message: parsed.error.issues[0]?.message || ERROR_MESSAGES.INVALID_DISPLAY_NAME,
-            },
-          });
+          if (typeof callback === 'function') {
+            callback({
+              success: false,
+              error: {
+                code: ERROR_CODES.INVALID_DISPLAY_NAME,
+                message: parsed.error.issues[0]?.message || ERROR_MESSAGES.INVALID_DISPLAY_NAME,
+              },
+            });
+          }
           return;
         }
 
@@ -42,14 +44,16 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
 
         socket.join(room.roomCode);
 
-        callback({
-          success: true,
-          data: {
-            roomCode: room.roomCode,
-            sessionToken,
-            playerId: player.id,
-          },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: true,
+            data: {
+              roomCode: room.roomCode,
+              sessionToken,
+              playerId: player.id,
+            },
+          });
+        }
 
         // Broadcast initial state & chat history to room
         io.to(room.roomCode).emit('room:state', room.getState());
@@ -58,10 +62,12 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : ERROR_MESSAGES.ACTION_FAILED;
-        callback({
-          success: false,
-          error: { code: ERROR_CODES.ACTION_FAILED, message: msg },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: false,
+            error: { code: ERROR_CODES.ACTION_FAILED, message: msg },
+          });
+        }
       }
     });
 
@@ -70,13 +76,15 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
       try {
         const parsed = JoinRoomPayloadSchema.safeParse(payload);
         if (!parsed.success) {
-          callback({
-            success: false,
-            error: {
-              code: ERROR_CODES.INVALID_DISPLAY_NAME,
-              message: parsed.error.issues[0]?.message || 'Invalid join parameters.',
-            },
-          });
+          if (typeof callback === 'function') {
+            callback({
+              success: false,
+              error: {
+                code: ERROR_CODES.INVALID_DISPLAY_NAME,
+                message: parsed.error.issues[0]?.message || 'Invalid join parameters.',
+              },
+            });
+          }
           return;
         }
 
@@ -88,14 +96,16 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
 
         socket.join(room.roomCode);
 
-        callback({
-          success: true,
-          data: {
-            roomCode: room.roomCode,
-            sessionToken,
-            playerId: player.id,
-          },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: true,
+            data: {
+              roomCode: room.roomCode,
+              sessionToken,
+              playerId: player.id,
+            },
+          });
+        }
 
         // Broadcast updated room state to all players
         io.to(room.roomCode).emit('room:state', room.getState());
@@ -106,10 +116,12 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : ERROR_MESSAGES.ACTION_FAILED;
-        callback({
-          success: false,
-          error: { code: ERROR_CODES.ACTION_FAILED, message: msg },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: false,
+            error: { code: ERROR_CODES.ACTION_FAILED, message: msg },
+          });
+        }
       }
     });
 
@@ -118,13 +130,15 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
       try {
         const parsed = ReconnectPayloadSchema.safeParse(payload);
         if (!parsed.success) {
-          callback({
-            success: false,
-            error: {
-              code: ERROR_CODES.SESSION_EXPIRED,
-              message: 'Invalid reconnection payload.',
-            },
-          });
+          if (typeof callback === 'function') {
+            callback({
+              success: false,
+              error: {
+                code: ERROR_CODES.SESSION_EXPIRED,
+                message: 'Invalid reconnection payload.',
+              },
+            });
+          }
           return;
         }
 
@@ -136,13 +150,15 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
 
         socket.join(room.roomCode);
 
-        callback({
-          success: true,
-          data: {
-            player: player.toSummary(),
-            room: room.getState(),
-          },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: true,
+            data: {
+              player: player.toSummary(),
+              room: room.getState(),
+            },
+          });
+        }
 
         // Broadcast updated state to room
         io.to(room.roomCode).emit('room:state', room.getState());
@@ -153,10 +169,12 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : ERROR_MESSAGES.SESSION_EXPIRED;
-        callback({
-          success: false,
-          error: { code: ERROR_CODES.SESSION_EXPIRED, message: msg },
-        });
+        if (typeof callback === 'function') {
+          callback({
+            success: false,
+            error: { code: ERROR_CODES.SESSION_EXPIRED, message: msg },
+          });
+        }
       }
     });
 
@@ -275,69 +293,129 @@ export function setupSocketHandlers(io: Server<ClientToServerEvents, ServerToCli
 
     // 10. Game Actions
     socket.on('game:rollDice', (callback) => {
-      const room = roomManager.getRoomBySocketId(socket.id);
-      const player = roomManager.getPlayerBySocketId(socket.id);
-      if (!room || !player || !room.gameEngine) return;
-      
-      const result = room.gameEngine.rollDice(player.id);
-      if (result.success && result.dice) {
-        callback({ success: true, data: { dice: result.dice } });
-        io.to(room.roomCode).emit('room:state', room.getState());
-        if (result.message) {
-          room.addSystemChatMessage(`${player.displayName} ${result.message}`);
-          io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+      try {
+        const room = roomManager.getRoomBySocketId(socket.id);
+        const player = roomManager.getPlayerBySocketId(socket.id);
+        if (!room || !player || !room.gameEngine) {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'NOT_IN_GAME', message: 'Game session not active.' } });
+          }
+          return;
         }
-      } else {
-        callback({ success: false, error: { code: 'ROLL_FAILED', message: result.message || 'Failed to roll' } });
+
+        const result = room.gameEngine.rollDice(player.id);
+        if (result.success && result.dice) {
+          if (typeof callback === 'function') {
+            callback({ success: true, data: { dice: result.dice } });
+          }
+          io.to(room.roomCode).emit('room:state', room.getState());
+          if (result.message) {
+            room.addSystemChatMessage(`${player.displayName} ${result.message}`);
+            io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+          }
+        } else {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'ROLL_FAILED', message: result.message || 'Failed to roll' } });
+          }
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Error executing dice roll.';
+        if (typeof callback === 'function') {
+          callback({ success: false, error: { code: 'ROLL_ERROR', message: msg } });
+        }
       }
     });
 
     socket.on('game:buyProperty', (callback) => {
-      const room = roomManager.getRoomBySocketId(socket.id);
-      const player = roomManager.getPlayerBySocketId(socket.id);
-      if (!room || !player || !room.gameEngine) return;
-      
-      const result = room.gameEngine.buyProperty(player.id);
-      if (result.success) {
-        callback({ success: true, data: {} });
-        io.to(room.roomCode).emit('room:state', room.getState());
-        if (result.message) {
-          room.addSystemChatMessage(`${player.displayName} ${result.message}`);
-          io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+      try {
+        const room = roomManager.getRoomBySocketId(socket.id);
+        const player = roomManager.getPlayerBySocketId(socket.id);
+        if (!room || !player || !room.gameEngine) {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'NOT_IN_GAME', message: 'Game session not active.' } });
+          }
+          return;
         }
-      } else {
-        callback({ success: false, error: { code: 'BUY_FAILED', message: result.message || 'Failed to buy' } });
+
+        const result = room.gameEngine.buyProperty(player.id);
+        if (result.success) {
+          if (typeof callback === 'function') {
+            callback({ success: true, data: {} });
+          }
+          io.to(room.roomCode).emit('room:state', room.getState());
+          if (result.message) {
+            room.addSystemChatMessage(`${player.displayName} ${result.message}`);
+            io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+          }
+        } else {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'BUY_FAILED', message: result.message || 'Failed to buy' } });
+          }
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Error purchasing property.';
+        if (typeof callback === 'function') {
+          callback({ success: false, error: { code: 'BUY_ERROR', message: msg } });
+        }
       }
     });
 
     socket.on('game:endTurn', (callback) => {
-      const room = roomManager.getRoomBySocketId(socket.id);
-      const player = roomManager.getPlayerBySocketId(socket.id);
-      if (!room || !player || !room.gameEngine) return;
-      
-      const result = room.gameEngine.endTurn(player.id);
-      if (result.success) {
-        callback({ success: true, data: {} });
-        io.to(room.roomCode).emit('room:state', room.getState());
-      } else {
-        callback({ success: false, error: { code: 'END_TURN_FAILED', message: result.message || 'Failed to end turn' } });
+      try {
+        const room = roomManager.getRoomBySocketId(socket.id);
+        const player = roomManager.getPlayerBySocketId(socket.id);
+        if (!room || !player || !room.gameEngine) {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'NOT_IN_GAME', message: 'Game session not active.' } });
+          }
+          return;
+        }
+
+        const result = room.gameEngine.endTurn(player.id);
+        if (result.success) {
+          if (typeof callback === 'function') {
+            callback({ success: true, data: {} });
+          }
+          io.to(room.roomCode).emit('room:state', room.getState());
+          if (result.message) {
+            room.addSystemChatMessage(result.message);
+            io.to(room.roomCode).emit('chat:message', room.getChatHistory()[room.getChatHistory().length - 1]);
+          }
+        } else {
+          if (typeof callback === 'function') {
+            callback({ success: false, error: { code: 'END_TURN_FAILED', message: result.message || 'Failed to end turn' } });
+          }
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Error ending turn.';
+        if (typeof callback === 'function') {
+          callback({ success: false, error: { code: 'END_TURN_ERROR', message: msg } });
+        }
       }
     });
 
     // 11. Leave Room
     socket.on('room:leave', () => {
-      const { room } = roomManager.leaveRoom(socket.id);
-      if (room) {
-        socket.leave(room.roomCode);
-        io.to(room.roomCode).emit('room:state', room.getState());
+      try {
+        const { room } = roomManager.leaveRoom(socket.id);
+        if (room) {
+          socket.leave(room.roomCode);
+          io.to(room.roomCode).emit('room:state', room.getState());
+        }
+      } catch (err) {
+        console.error('Error handling leaveRoom:', err);
       }
     });
 
-    // 11. Disconnect
+    // 12. Disconnect
     socket.on('disconnect', () => {
-      const { room } = roomManager.handleDisconnect(socket.id);
-      if (room) {
-        io.to(room.roomCode).emit('room:state', room.getState());
+      try {
+        const { room } = roomManager.handleDisconnect(socket.id);
+        if (room) {
+          io.to(room.roomCode).emit('room:state', room.getState());
+        }
+      } catch (err) {
+        console.error('Error handling disconnect:', err);
       }
     });
   });

@@ -30,9 +30,9 @@ const getGridPosition = (index: number) => {
 };
 
 export const Board: React.FC = () => {
-  const { roomState } = useGameStore();
+  const { roomState, isRollingDice } = useGameStore();
   const dice = roomState?.gameState?.lastDiceRoll || [3, 4];
-  const isRolling = roomState?.gameState?.phase === 'ROLLING' || false;
+  const isRolling = Boolean(isRollingDice);
   
   return (
     <div className="w-full max-w-5xl aspect-square mx-auto flex items-center justify-center p-4 min-w-[800px] md:min-w-0">
