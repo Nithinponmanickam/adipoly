@@ -249,7 +249,18 @@ export class GameLoop {
       return { success: true, message: `${solventPlayers[0].displayName} has won the match!` };
     }
 
-    this.state.activePlayerIndex = (this.state.activePlayerIndex + 1) % this.state.players.length;
+    // Skip eliminated players with no cash and no properties
+    let nextIndex = (this.state.activePlayerIndex + 1) % this.state.players.length;
+    let attempts = 0;
+    while (
+      attempts < this.state.players.length &&
+      this.state.players[nextIndex].money <= 0 &&
+      this.state.players[nextIndex].ownedPropertyIds.length === 0
+    ) {
+      nextIndex = (nextIndex + 1) % this.state.players.length;
+      attempts++;
+    }
+    this.state.activePlayerIndex = nextIndex;
     this.state.phase = 'ROLLING';
     this.state.turnNumber++;
     this.state.updatedAt = Date.now();

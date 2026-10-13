@@ -4,7 +4,7 @@ import { ADIPOLY_BOARD_SPACES } from '@adipoly/game-engine';
 import { Dices, ShoppingCart, ArrowRightCircle, Award } from 'lucide-react';
 
 export const GameControls: React.FC = () => {
-  const { roomState, currentPlayerId, rollDice, buyProperty, endTurn, isLoading } = useGameStore();
+  const { roomState, currentPlayerId, rollDice, buyProperty, endTurn, leaveRoom, isLoading } = useGameStore();
 
   if (!roomState || !roomState.gameState || !currentPlayerId) return null;
 
@@ -22,9 +22,15 @@ export const GameControls: React.FC = () => {
             MATCH CONCLUDED!
           </span>
         </div>
-        <p className="font-bold text-lg text-black">
+        <p className="font-bold text-lg text-black mb-4">
           Champion: <span className="underline uppercase">{winner.displayName}</span>
         </p>
+        <button
+          onClick={leaveRoom}
+          className="neo-brutal bg-black text-white px-8 py-3 font-black uppercase text-sm hover:bg-gray-800 transition cursor-pointer"
+        >
+          RETURN TO HOME
+        </button>
       </div>
     );
   }
