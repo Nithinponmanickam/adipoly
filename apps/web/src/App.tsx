@@ -80,11 +80,15 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  const isInGame = roomState?.status === 'IN_GAME';
+
   return (
-    <div className="min-h-screen bg-background text-text flex flex-col font-sans selection:bg-primary/20 selection:text-primary">
+    <div className={`bg-background text-text flex flex-col font-sans selection:bg-primary/20 selection:text-primary ${
+      isInGame ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'
+    }`}>
       <Header />
 
-      <main className="flex-1 flex flex-col">
+      <main className={`flex-1 min-h-0 flex flex-col ${isInGame ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         {!roomState ? (
           <HomeScreen />
         ) : roomState.status === 'IN_GAME' ? (

@@ -15,21 +15,21 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="border-b-4 border-border bg-surface sticky top-0 z-40 px-4 py-3">
+    <header className="border-b-3 sm:border-b-4 border-border bg-surface sticky top-0 z-40 px-3 py-2 sm:px-4 sm:py-2.5 shrink-0">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 border-4 border-border bg-primary flex items-center justify-center font-display font-black text-black text-xl shadow-[2px_2px_0px_0px_rgba(17,24,39,1)]">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 border-3 sm:border-4 border-border bg-primary flex items-center justify-center font-display font-black text-black text-lg sm:text-xl shadow-[2px_2px_0px_0px_rgba(17,24,39,1)]">
             A
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-display font-black tracking-widest text-2xl text-text">ADIPOLY</span>
-              <span className="text-[10px] uppercase tracking-widest font-black px-1.5 py-0.5 border-2 border-border bg-accent text-white">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-display font-black tracking-widest text-xl sm:text-2xl text-text">ADIPOLY</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest font-black px-1.5 py-0.2 sm:py-0.5 border-2 border-border bg-accent text-white">
                 Phase 1
               </span>
             </div>
-            <p className="text-xs font-bold text-muted hidden sm:block">
+            <p className="text-[11px] sm:text-xs font-bold text-muted hidden sm:block">
               Multiplayer Property & Business Strategy
             </p>
           </div>
